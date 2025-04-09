@@ -50,17 +50,26 @@ pub fn start() -> Result<(), JsValue> {
     }
 
     {
-        let input = input.clone();
-        let on_drop = Closure::wrap(Box::new(move |event: DragEvent| {
-            web_sys::console::log_1(&"Drop event".into());
-            event.prevent_default();
-            if let Some(files) = event.data_transfer().and_then(|d| d.files()) {
+        
+        let on_drop = {
+            let file_info = file_info.clone();
+            let input = input.clone();
+            Closure::wrap(Box::new(move |event: DragEvent| {
+                web_sys::console::log_1(&"Drop event".into());
+                event.prevent_default();
+                if let Some(files) = event.data_transfer().and_then(|d| d.files()) {
                     if files.length() > 0 {
                         input.set_files(Some(&files));
+                        if let Some(file) = files.get(0) {
+                            let name = file.name();
+                            let size = file.size();
+                            file_info.set_inner_text(&format!("📄 {} ({} bytes)", name, size));
+                        }
                         web_sys::console::log_1(&"File dropped and selected!".into());
                     }
-            }
-        }) as Box<dyn FnMut(_)>);
+                }
+            }) as Box<dyn FnMut(_)>)
+        };
 
 
         let on_drag = {
@@ -89,9 +98,11 @@ pub fn start() -> Result<(), JsValue> {
     {
         let file_info = file_info.clone();
         let closure = Closure::wrap(Box::new(move |event: web_sys::Event| {
+            web_sys::console::log_1(&"Changes".into());
             let input: HtmlInputElement = event.target().unwrap().dyn_into().unwrap();
             if let Some(file_list) = input.files() {
                 if let Some(file) = file_list.get(0) {
+                    web_sys::console::log_1(&file.name().into());
                     let name = file.name();
                     let size = file.size();
                     file_info.set_inner_text(&format!("📄 {} ({} bytes)", name, size));
