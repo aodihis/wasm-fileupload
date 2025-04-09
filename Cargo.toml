@@ -1,0 +1,22 @@
+[package]
+name = "wasm-ft"
+version = "0.1.0"
+authors = ["Iqbal <aodihis@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "wasm-ft"
+path = "src/main.rs"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+tiny_http = "0.12"
+js-sys = "0.3.77"
+wasm-bindgen = "0.2.63"
+web-sys = { version = "0.3.77", features = ["Document", "HtmlInputElement", "RequestInit", "HtmlFormElement", "Event", "FileReader", "FileList", "Blob", "FormData", "Request", "Response", "Window", "XmlHttpRequest", "HtmlButtonElement", "DragEvent", "DataTransfer", "console", "CssStyleDeclaration", "File", "DomTokenList", "Headers"] }
+console_error_panic_hook = "0.1.7"
+wasm-bindgen-futures = "0.4.50"
+chrono = "0.4.40"
+
